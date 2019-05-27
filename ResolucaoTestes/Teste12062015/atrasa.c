@@ -6,8 +6,6 @@
 #include <sys/stat.h>
 #include <string.h>
 
-
-
 /*
 ssize_t readln(int fildes, void *buf, size_t nbyte){
 	int r,bytesRead=0;
@@ -114,6 +112,36 @@ int main (int argc, char* argv[]) {
 	return 0; 
 
 }
+
+
+//Versão 2 -- menos correta, porque não lê linha a linha 
+
+#define MAX_SIZE 512
+
+int tempo; 
+
+int main(int argc, char * argv){
+	int tamanho; 
+	char buffer[512]; 
+	tempo = atoi(argv[1]); 
+
+	signal(SIGUSR1, aumenta); 
+	signal(SIGUSR2, diminui); 
+	signal(SIGALRM, vazio); 
+
+	while(tamanho=read(0,buffer,MAX_SIZE)){
+		buffer[tamanho]=0;
+		alarm(tempo);
+		pause();
+		write(1, buffer, tamanho); 
+	}
+
+	return 0; 
+}
+
+
+
+
 
 
 	
