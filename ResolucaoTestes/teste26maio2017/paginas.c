@@ -60,7 +60,7 @@ int main(int argc, char * argvs[]){
     }
     if (control[i] == 1) contador++;
     else contador = 0;
-    i = (i+1) % (argc-1);
+    i = (i+1) % (argc-1);//fazer ciclo 
   }
   return 0;
 }
