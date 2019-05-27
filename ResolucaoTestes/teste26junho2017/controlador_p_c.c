@@ -23,9 +23,19 @@ void handler(int sinal){
 	atual=(atual+1)%c; 
 }
 
+int readln(int fd, char *buf, int size){
+  int n, i = 0;
+  while((n = read(0, buf+i, 1)) && i < size){
+    if(buf[i] == '\0')
+      return i+1;
+    i++;
+  }
+  return i;
+}
+
 int main(int argc, char const *argv[]){
 	char * buf = (char*) malloc (sizeof(buf)); 
-	int i, pd[2], p,c,j; 
+	int i, pd[2], p,c,j,n; 
 	p=atoi(argv[1]); 
 	c=atoi(argv[2]); 
 	int cd[c][2]; //consumidor 
@@ -44,7 +54,7 @@ int main(int argc, char const *argv[]){
 		pipe(cd[j]); //tantos pipes quantos consumidores
 		if(fork()==0){
 			close(cd[j][1]); //fecho a escrita
-			dup2(cd[j][0]);
+			dup2(cd[j][0],0);
 			execlp("consumidor", "consumidor", NULL); 
 			_exit(1); 
 		}
@@ -52,7 +62,7 @@ int main(int argc, char const *argv[]){
 	}
 
 	signal(SIGUSR1, handler); 
-	while((n=readln(pd[0]), buf, sizeof(buf))>0){
+	while((n=readln(pd[0], buf, sizeof(buf)))>0){
 		write(cd[atual][1], buf,n); 
 
 	}
