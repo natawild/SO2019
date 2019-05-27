@@ -18,7 +18,7 @@ mkfifo("ordenar", 0666);
 
 while(1){
 	int fd= open("ordenar", O_RDONLY); 
-	if((n=read(fd, buf, sizeof(buf)))<=0){
+	if((n=readln(fd, buf, sizeof(buf)))<=0){
 		break; 
 	}
 	if(fork()==0){//sou filho
@@ -27,7 +27,7 @@ while(1){
 		int fd1=open(buf, O_RDONLY);
 		dup2(fd1,0);
 		close(fd1); 
-		int fd2= open(buffFinal,  O_CREAT|O_TRUNC|O_WRONLY);
+		int fd2= open(buffFinal,  O_CREAT|O_TRUNC|O_WRONLY, 0666);
 		dup2(fd2,1); 
 		close(fd2); 
 		execlp("sort","sort", buf, NULL); 

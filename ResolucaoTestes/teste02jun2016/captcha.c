@@ -28,6 +28,8 @@ int main(int argc, char const* argv[]){
 			_exit(1); 
 		}
 	}
+	close(fd); 
+	return 0; 
 }
 
 
