@@ -1,3 +1,14 @@
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <signal.h>
+#include <string.h>
+
 /*
 Considere um programa 'avariado' que por vezes bloqueia durante a execução, sem conseguir realizar uma função 
 e sem terminar. Sabemos que, enquanto funciona corretamente o avariado envia o sinal SIGUSR1 ao processo pai
@@ -7,38 +18,32 @@ vez.
 */
 
 
+pid_t pid; 
 void handler(int sinal){
 	switch (sinal){
-		case SIGALARM: 
-			tempo++; 
-			alarm(1); 
-			if (tempo==5){
-				kill(pid, SIGKILL); 
-				tempo=0; 
-			}
+		case SIGALRM: 
+			kill(pid, SIGKILL); 
 			break; 
 		case SIGUSR1: 
-			tempo=0; 
-			alarm(1);
+			alarm(5);
 			break; 
-		default: 
+		default:
+			break;  
 	}
 }
 
 
-pid_t pid; 
-int tempo=0; 
 int main(int argc, char const *argv[]){
 	int status; 
-	signal(SIGALARM, handler); 
+	signal(SIGALRM, handler); 
 	signal(SIGUSR1, handler); 
 	do{
 		alarm(1); 
-		if(pid=fork()==0){
-			execlp("avariado", "avariado", NULL); 
+		if((pid=fork())==0){
+			execlp("avariado","avariado",NULL); 
 			_exit(1); 
 		}
 		wait(&status); 
-	}while(!IFEXITED(status)||WEXITSTATUS(status)); 
+	}while(!WIFEXITED(status)||!WEXITSTATUS(status)); 
 	return 0;
 }

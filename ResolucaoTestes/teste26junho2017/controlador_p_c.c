@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
+#include <string.h>
 
 /*
 Escreva um programa, invocado da forma controlador <p> <c>, para processamento de linhas de texto

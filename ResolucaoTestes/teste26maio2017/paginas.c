@@ -9,9 +9,9 @@
 /*
 pretende-se escrever o prgrama 'paginas' que recebe os nomes de varios executaveis e que faz com 
 que o output desses programas apareça alternadamente, página por página, de 10 linhas cada uma. 
-Por exemplo, correndo "paginas ls df find", dever\ao ser impressas 10 linhas do ls, depois 10 linhas do df,
+Por exemplo, correndo "paginas ls df find", deverao ser impressas 10 linhas do ls, depois 10 linhas do df,
 depois 10 linhas do find, depois 10 linhas do ls e assim sucessivamente, até que os vários programas terminem. 
-A ausencia de output d eum dos programas não deverá impedir a impressão das linhas dos outros. 
+A ausencia de output de um dos programas não deverá impedir a impressão das linhas dos outros. 
 */
 
 int readln(int fd, char *buffer, int size){
@@ -33,7 +33,7 @@ int main(int argc, char * argvs[]){
   int fd[argc-1][2];
   for(i = 0; i < argc-1; i++){
     pipe(fd[i]);
-    if(!fork()){
+    if(fork()==0){
       dup2(fd[i][1], 1);
       close(fd[i][1]);
       close(fd[i][0]);
@@ -52,7 +52,7 @@ int main(int argc, char * argvs[]){
     linhas = 0;
     while(linhas < 10 && control[i] != 1){
       n = readln(fd[i][0], buffer2, 1024);
-      if(n == 0){
+      if(n == 0){//se não tem dados no buffer 
         control[i] = 1;
       }
       write(1, buffer2, n);
